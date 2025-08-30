@@ -1,1 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>silo.info - Application</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    body { background:#ffffff; color:#111; line-height:1.6; animation:fadeIn 0.8s ease-in; }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    header { background:#e0f4ff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; position:relative; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    .hamburger { font-size:1.8rem; cursor:pointer; user-select:none; }
+    .menu { display:none; flex-direction:column; position:absolute; top:60px; right:20px; background:white; border:1px solid #ccc; border-radius:10px; min-width:180px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:100; }
+    .menu a, .menu button { padding:.75rem 1.2rem; color:#007acc; text-decoration:none; background:none; border:none; text-align:left; cursor:pointer; font-size:1rem; white-space:nowrap; }
+    .menu a:hover, .menu button:hover { background:#f0f8ff; }
+    .submenu { display:none; flex-direction:column; border-top:1px solid #ccc; }
+    .more-submenu { display:none; position:absolute; top:0; right:100%; background:white; border:1px solid #ccc; border-radius:10px; min-width:180px; box-shadow:0 4px 12px rgba(0,0,0,0.15); flex-direction:column; z-index:110; }
+    .more-submenu a { padding:.75rem 1.2rem; color:#007acc; text-decoration:none; }
+    .more-submenu a:hover { background:#f0f8ff; }
+    main { padding:2rem; max-width:900px; margin:auto; }
+    h1 { margin-bottom:1rem; font-size:2rem; font-weight:600; }
+    h2 { font-size:1.5rem; margin-top:2rem; margin-bottom:.5rem; font-weight:600; color:#007acc; }
+    p { margin-bottom:1rem; font-size:1rem; }
+    footer { margin-top:3rem; background:#e0f4ff; padding:1rem 2rem; text-align:center; font-size:.9rem; color:#333; }
+    footer a { color:#007acc; text-decoration:none; margin:0 10px; }
+    footer a:hover { text-decoration:underline; }
+    footer .copyright { margin-top:.5rem; font-size:.8rem; color:#666; }
+    .button { display:inline-block; padding:.75rem 1.5rem; background:#007acc; color:white; font-size:1.1rem; font-weight:600; text-decoration:none; border-radius:8px; transition:.3s; cursor:pointer; }
+    .button:hover { background:#005fa3; }
+    .form-page { display:none; }
+    .form-page.active { display:block; }
+    label { display:block; margin:0.5rem 0; font-weight:600; }
+    input, select, textarea { width:100%; padding:0.5rem; margin-bottom:1rem; border:1px solid #ccc; border-radius:5px; font-family:'Poppins',sans-serif; font-size:1rem; }
+    textarea { min-height:120px; resize:vertical; }
+  </style>
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
 
+    document.addEventListener("click", function(event) {
+      const menu = document.getElementById("dropdownMenu");
+      const hamburger = document.querySelector(".hamburger");
+      if (!menu.contains(event.target) && event.target !== hamburger) {
+        menu.style.display = "none";
+      }
+    });
+
+    let currentPage = 0;
+    const formPages = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      formPages.push(...document.querySelectorAll(".form-page"));
+      formPages[currentPage].classList.add("active");
+    });
+
+    function nextPage() {
+      if(currentPage < formPages.length - 1) {
+        formPages[currentPage].classList.remove("active");
+        currentPage++;
+        formPages[currentPage].classList.add("active");
+      }
+    }
+
+    function prevPage() {
+      if(currentPage > 0) {
+        formPages[currentPage].classList.remove("active");
+        currentPage--;
+        formPages[currentPage].classList.add("active");
+      }
+    }
+
+    function submitApplication() {
+      const data = {};
+      const elements = document.querySelectorAll("input, select, textarea");
+      elements.forEach(el => { data[el.name] = el.value || (el.checked !== undefined ? el.checked : ""); });
+      fetch("YOUR_WEBHOOK_URL_HERE", {
+        method:"POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      }).then(()=>alert("Application submitted!"))
+      .catch(()=>alert("Failed to submit."));
+    }
+
+    function randomGuide() {
+      const guides = ["SkitDebug (JIT) Guide","TrollMisaka Guide","SideStore Guide","Sideloadly Guide"];
+      return guides[Math.floor(Math.random() * guides.length)];
+    }
+
+    function setRandomGuide() {
+      const el = document.getElementById("guideTopic");
+      el.textContent = randomGuide();
+    }
+  </script>
+</head>
+<body onload="setRandomGuide()">
+
+<header>
+  <div class="logo"><strong>silo.info</strong></div>
+  <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </div>
+  <div class="menu" id="dropdownMenu">
+    <a href="#">About Us</a>
+    <a href="#">Careers</a>
+    <a href="#">Resources ▾</a>
+    <div class="submenu" id="subMenu">
+      <a href="https://ios.sideload.info" target="_blank">Sideloading Guides</a>
+      <a href="https://repo.sideload.info" target="_blank">App Marketplace</a>
+      <a href="#">Blog</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1>Guide Maintainer Application</h1>
+
+  <!-- Page 1 -->
+  <div class="form-page">
+    <h2>Cloudflare Verification</h2>
+    <p>Please confirm you are not a robot.</p>
+    <label><input type="checkbox" name="cloudflare_verification" required> I am not a robot</label>
+    <button class="button" onclick="nextPage()">Next</button>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="form-page">
+    <h2>Contact Information</h2>
+    <label>Discord Username & ID<input type="text" name="discord_info" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Current Age<input type="number" name="age" required></label>
+    <div style="display:flex; gap:1rem;">
+      <button class="button" onclick="prevPage()">Back</button>
+      <button class="button" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="form-page">
+    <h2>Skills Assessment</h2>
+    <label>HTML Skills (1-10)
+      <select name="html_skills" required>
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </label>
+    <label>English Fluency (1-10)
+      <select name="english_skills" required>
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+        <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </label>
+    <label>Daily Activity (1-10)
+      <select name="daily_activity" required>
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+        <option value="7">7</option><        <option value="8">8</option><option value="9">9</option><option value="10">10</option>
+      </select>
+    </label>
+    <div style="display:flex; gap:1rem;">
+      <button class="button" onclick="prevPage()">Back</button>
+      <button class="button" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 4 -->
+  <div class="form-page">
+    <h2>Benefits & Motivation</h2>
+    <label>How will you benefit sideload.info?
+      <textarea name="benefit" required></textarea>
+    </label>
+    <label>Expected payment per two new guides
+      <input type="text" name="expected_payment" required>
+    </label>
+    <label>Why should we pick you over other applicants?
+      <textarea name="why_pick" required></textarea>
+    </label>
+    <label>Skills you provide that may benefit development
+      <textarea name="skills" required></textarea>
+    </label>
+    <div style="display:flex; gap:1rem;">
+      <button class="button" onclick="prevPage()">Back</button>
+      <button class="button" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 5 -->
+  <div class="form-page">
+    <h2>Guide Writing Task</h2>
+    <p>Write a guide in HTML only. Example:</p>
+    <pre>&lt;ul&gt;
+  &lt;p&gt;example&lt;/p&gt;
+&lt;/ul&gt;</pre>
+    <p>Write a guide for: <strong id="guideTopic"></strong></p>
+    <textarea name="guide_task" placeholder="Write your guide here..." required></textarea>
+    <div style="display:flex; gap:1rem;">
+      <button class="button" onclick="prevPage()">Back</button>
+      <button class="button" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 6 -->
+  <div class="form-page">
+    <h2>Past Experience</h2>
+    <label>Experience in sideloading/jailbreaking community?
+      <textarea name="community_experience"></textarea>
+    </label>
+    <label>Experience, skill, or knowledge related to sideloading/iOS/private APIs?
+      <textarea name="technical_experience"></textarea>
+    </label>
+    <div style="display:flex; gap:1rem;">
+      <button class="button" onclick="prevPage()">Back</button>
+      <button class="button" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Page 7 -->
+  <div class="form-page">
+    <h2>Agreements & Submission</h2>
+    <label><input type="checkbox" name="no_ai" required> I agree I did not use AI or copy existing guides.</label>
+    <label><input type="checkbox" name="acknowledge_status" required> I acknowledge I may not be accepted and will not be notified.</label>
+    <label><input type="checkbox" name="final_cloudflare" required> I am not a robot (Cloudflare verification)</label>
+    <div style="display:flex; gap:1rem;">
+      <button class="button" onclick="prevPage()">Back</button>
+      <button class="button" onclick="submitApplication()">Submit Application</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div>
+    <a href="mailto:youremail@example.com">Contact</a>
+    <a href="https://discord.gg/yourserver" target="_blank">Discord</a>
+  </div>
+  <div class="copyright">© 2025 - silo.info - All rights reserved</div>
+</footer>
+
+</body>
+</html>
+                                      
